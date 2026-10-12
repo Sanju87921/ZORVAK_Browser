@@ -50,7 +50,7 @@ class GavixWebView(QWebEngineView):
         profile_path = os.path.join(app_data, "GavixBrowser", "profile")
         os.makedirs(profile_path, exist_ok=True)
 
-        self._profile = QWebEngineProfile("GavixProfile", self)
+        self._profile = QWebEngineProfile.defaultProfile()
         self._profile.setPersistentStoragePath(profile_path)
         self._profile.setPersistentCookiesPolicy(
             QWebEngineProfile.PersistentCookiesPolicy.AllowPersistentCookies

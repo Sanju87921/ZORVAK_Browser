@@ -28,6 +28,8 @@ from gavix_browser.storage_dialogs import (
     GavixClearDataDialog
 )
 from gavix_browser.ai_panel import GavixAiPanel
+from gavix_browser.downloads import GavixDownloadManager, GavixDownloadsDialog
+from PySide6.QtWebEngineCore import QWebEngineProfile
 
 
 class GavixMainWindow(QMainWindow):
@@ -41,6 +43,14 @@ class GavixMainWindow(QMainWindow):
 
         # Initialize local SQLite storage
         self.storage = GavixStorage()
+
+        # Initialize Download Manager
+        self.download_manager = GavixDownloadManager(self)
+        QWebEngineProfile.defaultProfile().downloadRequested.connect(
+            self.download_manager.handle_download_request
+        )
+        self.download_manager.download_started.connect(self._on_download_started)
+        self.download_manager.download_finished.connect(self._on_download_finished)
 
         # Apply global theme
         self.setStyleSheet(get_app_stylesheet())
@@ -231,6 +241,7 @@ class GavixMainWindow(QMainWindow):
         self.rail_downloads = QToolButton(rail)
         self.rail_downloads.setText("↓\nDown")
         self.rail_downloads.setToolTip("Downloads (Ctrl+J)")
+        self.rail_downloads.clicked.connect(self._on_open_downloads_dialog)
         layout.addWidget(self.rail_downloads)
 
         layout.addStretch()
@@ -255,6 +266,7 @@ class GavixMainWindow(QMainWindow):
         QShortcut(QKeySequence("Ctrl+D"), self, self._on_bookmark_toggle_clicked)
         QShortcut(QKeySequence("Ctrl+H"), self, self._on_open_history_dialog)
         QShortcut(QKeySequence("Ctrl+B"), self, self._on_open_bookmarks_dialog)
+        QShortcut(QKeySequence("Ctrl+J"), self, self._on_open_downloads_dialog)
         QShortcut(QKeySequence("Ctrl+I"), self, self._on_toggle_ai_panel)
 
     @property
@@ -465,3 +477,16 @@ class GavixMainWindow(QMainWindow):
         else:
             self.ai_panel.hide()
             self.status_bar.showMessage("GAVIX AI Panel Closed", 2500)
+
+    def _on_download_started(self, d_id: int, filename: str):
+        self.status_bar.showMessage(f"Downloading {filename}...", 4000)
+
+    def _on_download_finished(self, d_id: int, success: bool):
+        if success:
+            self.status_bar.showMessage("Download completed! Saved to Downloads.", 5000)
+        else:
+            self.status_bar.showMessage("Download was cancelled or interrupted.", 4000)
+
+    def _on_open_downloads_dialog(self):
+        dialog = GavixDownloadsDialog(self.download_manager, self)
+        dialog.exec()
