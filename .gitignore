@@ -1,0 +1,23 @@
+# Python & Virtual Environments
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.db
+*.sqlite3
+
+# Qt & Build artifacts
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & Temporary files
+*.log
+.system_generated/
+.user_uploaded/
+scratch/
+GavixBrowser/profile/

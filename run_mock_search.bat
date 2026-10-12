@@ -1,0 +1,3 @@
+@echo off
+echo Starting GAVIX Mock Search API Server at http://127.0.0.1:8000 ...
+call .venv\Scripts\python.exe browser\mock_server.py

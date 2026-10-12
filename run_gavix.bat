@@ -1,0 +1,3 @@
+@echo off
+echo Starting GAVIX Browser...
+call .venv\Scripts\python.exe browser\src\gavix_browser\main.py
