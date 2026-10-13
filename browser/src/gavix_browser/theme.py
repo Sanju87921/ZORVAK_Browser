@@ -104,32 +104,34 @@ def get_app_stylesheet() -> str:
         padding-right: 6px;
     }}
 
-    /* Left Navigation Rail (Translucent Glassmorphism) */
+    /* Left Navigation Rail (Matching Screenshot 1) */
     #NavRail {{
-        background-color: rgba(14, 20, 30, 0.55);
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
-        min-width: 64px;
-        max-width: 64px;
+        background-color: #0A1118;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        min-width: 72px;
+        max-width: 72px;
     }}
 
     #NavRail QToolButton {{
-        border-radius: 10px;
-        padding: 8px 4px;
-        margin: 3px 6px;
+        border-radius: 12px;
+        padding: 10px 4px;
+        margin: 4px 6px;
         color: rgba(255, 255, 255, 0.65);
-        font-size: 11px;
+        font-size: 10px;
+        font-weight: 500;
+        border: 1px solid transparent;
     }}
 
     #NavRail QToolButton:hover {{
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.08);
         color: #FFFFFF;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }}
 
     #NavRail QToolButton[active="true"] {{
-        background-color: rgba(0, 229, 153, 0.14);
+        background-color: rgba(0, 229, 153, 0.15);
         color: #00E599;
-        border: 1px solid rgba(0, 229, 153, 0.35);
+        border: 1px solid rgba(0, 229, 153, 0.4);
     }}
 
     /* Progress Bar */

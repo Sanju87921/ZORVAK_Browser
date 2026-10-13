@@ -102,9 +102,8 @@ class GavixMainWindow(QMainWindow):
         workspace_layout.setContentsMargins(0, 0, 0, 0)
         workspace_layout.setSpacing(0)
 
-        # 3A. Left Navigation Rail (Collapsible, hidden by default for maximum background visibility)
+        # 3A. Left Navigation Rail (Visible sidebar matching reference design)
         self.nav_rail = self._create_nav_rail()
-        self.nav_rail.hide()
         workspace_layout.addWidget(self.nav_rail)
 
         # 3B. Multi-Tab Container
@@ -134,12 +133,12 @@ class GavixMainWindow(QMainWindow):
         layout.setContentsMargins(8, 4, 8, 4)
         layout.setSpacing(6)
 
-        # Collapsible Sidebar / Tools Menu Toggle
+        # Sidebar Toggle (Hidden as sidebar is permanently visible)
         self.btn_sidebar = QToolButton(top_bar)
         self.btn_sidebar.setText("☰")
         self.btn_sidebar.setToolTip("Toggle Tools & Bookmarks Panel (Ctrl+M)")
         self.btn_sidebar.clicked.connect(self._on_toggle_nav_rail)
-        layout.addWidget(self.btn_sidebar)
+        self.btn_sidebar.hide()
 
         # Brand Emblem Logo
         brand_label = QLabel(top_bar)
@@ -189,7 +188,7 @@ class GavixMainWindow(QMainWindow):
         # Address Bar / Omnibox
         self.address_bar = QLineEdit(top_bar)
         self.address_bar.setObjectName("AddressBar")
-        self.address_bar.setPlaceholderText("Search with GAVIX or enter web address...")
+        self.address_bar.setPlaceholderText("Search GAVIX or type a URL")
         self.address_bar.returnPressed.connect(self._on_address_entered)
         layout.addWidget(self.address_bar, stretch=1)
 
@@ -248,7 +247,7 @@ class GavixMainWindow(QMainWindow):
         layout.addWidget(self.rail_search)
 
         self.rail_bookmarks = QToolButton(rail)
-        self.rail_bookmarks.setText("★\nMarks")
+        self.rail_bookmarks.setText("🔖\nBookmarks")
         self.rail_bookmarks.setToolTip("Bookmarks (Ctrl+B)")
         self.rail_bookmarks.clicked.connect(lambda: self._navigate_or_open_tab("gavix://bookmarks"))
         layout.addWidget(self.rail_bookmarks)
@@ -260,27 +259,21 @@ class GavixMainWindow(QMainWindow):
         layout.addWidget(self.rail_history)
 
         self.rail_downloads = QToolButton(rail)
-        self.rail_downloads.setText("↓\nDown")
+        self.rail_downloads.setText("↓\nDownloads")
         self.rail_downloads.setToolTip("Downloads (Ctrl+J)")
         self.rail_downloads.clicked.connect(lambda: self._navigate_or_open_tab("gavix://downloads"))
         layout.addWidget(self.rail_downloads)
 
         self.rail_extensions = QToolButton(rail)
-        self.rail_extensions.setText("🧩\nExt")
+        self.rail_extensions.setText("🧩\nExtensions")
         self.rail_extensions.setToolTip("GAVIX Extensions (Shield Protected)")
         self.rail_extensions.clicked.connect(self._on_shield_clicked)
         layout.addWidget(self.rail_extensions)
 
-        self.rail_ai = QToolButton(rail)
-        self.rail_ai.setText("✦\nAI")
-        self.rail_ai.setToolTip("Toggle GAVIX AI Assistant (Ctrl+I)")
-        self.rail_ai.clicked.connect(self._on_toggle_ai_panel)
-        layout.addWidget(self.rail_ai)
-
         layout.addStretch()
 
         self.rail_settings = QToolButton(rail)
-        self.rail_settings.setText("⚙\nConfig")
+        self.rail_settings.setText("⚙\nSettings")
         self.rail_settings.setToolTip("Settings & Privacy")
         self.rail_settings.clicked.connect(lambda: self._navigate_or_open_tab("gavix://settings"))
         layout.addWidget(self.rail_settings)
