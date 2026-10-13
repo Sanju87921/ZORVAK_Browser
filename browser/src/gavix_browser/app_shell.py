@@ -3,8 +3,9 @@ GAVIX Browser - Main Application Shell (Step 4 - Storage, Bookmarks, History Int
 """
 
 from pathlib import Path
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPixmap
+from PySide6.QtCore import Qt, QByteArray, QSize
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPixmap, QPainter
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -77,18 +78,36 @@ class GavixMainWindow(QMainWindow):
                 break
 
     def _init_ui(self):
-        """Builds the main window visual hierarchy."""
+        """Builds the main window visual hierarchy matching desktop browser chrome:
+        1. Top Tab Bar (Tabs + New Tab '+' button)
+        2. Navigation / Address Bar (Back, Forward, Reload, Address Input, Security & Actions)
+        3. Main Workspace Area (Left Navigation Rail + Web Content Viewport)
+        """
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         root_layout = QVBoxLayout(central_widget)
         root_layout.setContentsMargins(0, 0, 0, 0)
         root_layout.setSpacing(0)
 
-        # 1. Top Navigation Bar (Chrome)
+        # Multi-Tab Container
+        self.tab_widget = GavixTabWidget(self)
+        self.tab_widget.tab_state_changed.connect(self._sync_active_tab)
+        self.tab_widget.tab_created.connect(self._bind_tab_signals)
+
+        # 1. Top Tab Bar Container (Chrome tabs at the very top of the window)
+        top_tab_bar_widget = QWidget(self)
+        top_tab_bar_widget.setObjectName("TopTabBar")
+        top_tab_layout = QHBoxLayout(top_tab_bar_widget)
+        top_tab_layout.setContentsMargins(6, 4, 6, 0)
+        top_tab_layout.setSpacing(0)
+        top_tab_layout.addWidget(self.tab_widget.tabBar())
+        root_layout.addWidget(top_tab_bar_widget)
+
+        # 2. Top Navigation Bar (Address / Omnibox & controls)
         self.top_bar = self._create_top_bar()
         root_layout.addWidget(self.top_bar)
 
-        # 2. Loading Progress Bar
+        # 3. Loading Progress Bar
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setFixedHeight(2)
         self.progress_bar.setTextVisible(False)
@@ -96,23 +115,20 @@ class GavixMainWindow(QMainWindow):
         self.progress_bar.hide()
         root_layout.addWidget(self.progress_bar)
 
-        # 3. Main Workspace Area (Nav Rail + Multi-Tab Viewport)
+        # 4. Main Workspace Area (Left Navigation Rail + Multi-Tab Viewport)
         workspace = QWidget(self)
         workspace_layout = QHBoxLayout(workspace)
         workspace_layout.setContentsMargins(0, 0, 0, 0)
         workspace_layout.setSpacing(0)
 
-        # 3A. Left Navigation Rail (Visible sidebar matching reference design)
+        # 4A. Left Navigation Rail (Visible 78px sidebar matching reference design)
         self.nav_rail = self._create_nav_rail()
         workspace_layout.addWidget(self.nav_rail)
 
-        # 3B. Multi-Tab Container
-        self.tab_widget = GavixTabWidget(self)
-        self.tab_widget.tab_state_changed.connect(self._sync_active_tab)
-        self.tab_widget.tab_created.connect(self._bind_tab_signals)
+        # 4B. Web Viewport Content Stack
         workspace_layout.addWidget(self.tab_widget, stretch=1)
 
-        # 3C. Right AI Assistant Side Panel (Collapsible)
+        # 4C. Right AI Assistant Side Panel (Collapsible)
         self.ai_panel = GavixAiPanel(self)
         self.ai_panel.close_requested.connect(self._on_toggle_ai_panel)
         self.ai_panel.hide()  # Collapsed by default
@@ -120,7 +136,7 @@ class GavixMainWindow(QMainWindow):
 
         root_layout.addWidget(workspace, stretch=1)
 
-        # 4. Status Bar
+        # 5. Status Bar
         self.status_bar = QStatusBar(self)
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("GAVIX Ready — System Online")
@@ -140,34 +156,16 @@ class GavixMainWindow(QMainWindow):
         self.btn_sidebar.clicked.connect(self._on_toggle_nav_rail)
         self.btn_sidebar.hide()
 
-        # Brand Emblem Logo
-        brand_label = QLabel(top_bar)
-        assets_dir = Path(__file__).resolve().parent.parent.parent / "assets"
-        icon_path = assets_dir / "gavix_icon.png"
-        if icon_path.exists():
-            pixmap = QPixmap(str(icon_path)).scaled(
-                22, 22, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
-            )
-            brand_label.setPixmap(pixmap)
-            brand_label.setToolTip("GAVIX Browser")
-            brand_label.setStyleSheet("padding: 0 4px;")
-        else:
-            brand_label.setText("GAVIX")
-            brand_label.setStyleSheet(
-                f"color: {GavixColors.EMERALD}; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; padding: 0 4px;"
-            )
-        layout.addWidget(brand_label)
-
         # Navigation Controls Cluster
         self.btn_back = QToolButton(top_bar)
-        self.btn_back.setText("◀")
+        self.btn_back.setText("←")
         self.btn_back.setToolTip("Back (Alt+Left)")
         self.btn_back.setEnabled(False)
         self.btn_back.clicked.connect(self._on_back_clicked)
         layout.addWidget(self.btn_back)
 
         self.btn_forward = QToolButton(top_bar)
-        self.btn_forward.setText("▶")
+        self.btn_forward.setText("→")
         self.btn_forward.setToolTip("Forward (Alt+Right)")
         self.btn_forward.setEnabled(False)
         self.btn_forward.clicked.connect(self._on_forward_clicked)
@@ -178,12 +176,6 @@ class GavixMainWindow(QMainWindow):
         self.btn_reload.setToolTip("Reload (Ctrl+R)")
         self.btn_reload.clicked.connect(self._on_reload_clicked)
         layout.addWidget(self.btn_reload)
-
-        self.btn_home = QToolButton(top_bar)
-        self.btn_home.setText("⌂")
-        self.btn_home.setToolTip("Home (GAVIX New Tab)")
-        self.btn_home.clicked.connect(self._on_home_clicked)
-        layout.addWidget(self.btn_home)
 
         # Address Bar / Omnibox
         self.address_bar = QLineEdit(top_bar)
@@ -201,6 +193,12 @@ class GavixMainWindow(QMainWindow):
         layout.addWidget(self.btn_shield)
 
         # Action Buttons Cluster
+        self.btn_settings = QToolButton(top_bar)
+        self.btn_settings.setText("⚙")
+        self.btn_settings.setToolTip("Settings & Privacy")
+        self.btn_settings.clicked.connect(self._on_clear_data_clicked)
+        layout.addWidget(self.btn_settings)
+
         self.btn_bookmark = QToolButton(top_bar)
         self.btn_bookmark.setText("★")
         self.btn_bookmark.setToolTip("Bookmark this page (Ctrl+D)")
@@ -218,13 +216,30 @@ class GavixMainWindow(QMainWindow):
         self.btn_profile.setToolTip("Profile: Default (Isolated Session)")
         layout.addWidget(self.btn_profile)
 
-        self.btn_settings = QToolButton(top_bar)
-        self.btn_settings.setText("⚙")
-        self.btn_settings.setToolTip("Settings & Privacy")
-        self.btn_settings.clicked.connect(self._on_clear_data_clicked)
-        layout.addWidget(self.btn_settings)
-
         return top_bar
+
+    def _create_nav_icon(self, svg_body: str, stroke_width: str = "2", is_active: bool = False) -> QIcon:
+        """Renders high-DPI vector icons in normal muted and active emerald states."""
+        def render_state(stroke_color: str) -> QPixmap:
+            svg_xml = (
+                f'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" '
+                f'fill="none" stroke="{stroke_color}" stroke-width="{stroke_width}" '
+                f'stroke-linecap="round" stroke-linejoin="round">{svg_body}</svg>'
+            )
+            renderer = QSvgRenderer(QByteArray(svg_xml.encode("utf-8")))
+            pixmap = QPixmap(24, 24)
+            pixmap.fill(Qt.GlobalColor.transparent)
+            painter = QPainter(pixmap)
+            renderer.render(painter)
+            painter.end()
+            return pixmap
+
+        normal_color = "#00E599" if is_active else "#94A3B8"
+        icon = QIcon()
+        icon.addPixmap(render_state(normal_color), QIcon.Mode.Normal)
+        icon.addPixmap(render_state("#00E599"), QIcon.Mode.Active)
+        icon.addPixmap(render_state("#00E599"), QIcon.Mode.Selected)
+        return icon
 
     def _create_nav_rail(self) -> QWidget:
         """Creates the left navigation rail according to specification."""
@@ -232,48 +247,99 @@ class GavixMainWindow(QMainWindow):
         rail.setObjectName("NavRail")
         layout = QVBoxLayout(rail)
         layout.setContentsMargins(6, 12, 6, 12)
-        layout.setSpacing(10)
+        layout.setSpacing(8)
 
+        # 1. Home (Active state matching Screenshot 1)
         self.rail_home = QToolButton(rail)
-        self.rail_home.setText("⌂\nHome")
+        home_icon = self._create_nav_icon(
+            '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+            is_active=True
+        )
+        self.rail_home.setIcon(home_icon)
+        self.rail_home.setIconSize(QSize(22, 22))
+        self.rail_home.setText("Home")
+        self.rail_home.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_home.setProperty("active", "true")
+        self.rail_home.setToolTip("GAVIX Home (Alt+Home)")
         self.rail_home.clicked.connect(self._on_home_clicked)
         layout.addWidget(self.rail_home)
 
+        # 2. Search
         self.rail_search = QToolButton(rail)
-        self.rail_search.setText("🔍\nSearch")
+        search_icon = self._create_nav_icon(
+            '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'
+        )
+        self.rail_search.setIcon(search_icon)
+        self.rail_search.setIconSize(QSize(22, 22))
+        self.rail_search.setText("Search")
+        self.rail_search.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_search.setToolTip("Focus Search (Ctrl+L)")
         self.rail_search.clicked.connect(self._on_focus_address_bar)
         layout.addWidget(self.rail_search)
 
+        # 3. Bookmarks
         self.rail_bookmarks = QToolButton(rail)
-        self.rail_bookmarks.setText("🔖\nBookmarks")
+        bookmarks_icon = self._create_nav_icon(
+            '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>'
+        )
+        self.rail_bookmarks.setIcon(bookmarks_icon)
+        self.rail_bookmarks.setIconSize(QSize(22, 22))
+        self.rail_bookmarks.setText("Bookmarks")
+        self.rail_bookmarks.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_bookmarks.setToolTip("Bookmarks (Ctrl+B)")
         self.rail_bookmarks.clicked.connect(lambda: self._navigate_or_open_tab("gavix://bookmarks"))
         layout.addWidget(self.rail_bookmarks)
 
+        # 4. History
         self.rail_history = QToolButton(rail)
-        self.rail_history.setText("⏱\nHistory")
+        history_icon = self._create_nav_icon(
+            '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'
+        )
+        self.rail_history.setIcon(history_icon)
+        self.rail_history.setIconSize(QSize(22, 22))
+        self.rail_history.setText("History")
+        self.rail_history.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_history.setToolTip("Browsing History (Ctrl+H)")
         self.rail_history.clicked.connect(lambda: self._navigate_or_open_tab("gavix://history"))
         layout.addWidget(self.rail_history)
 
+        # 5. Downloads
         self.rail_downloads = QToolButton(rail)
-        self.rail_downloads.setText("↓\nDownloads")
+        downloads_icon = self._create_nav_icon(
+            '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>'
+        )
+        self.rail_downloads.setIcon(downloads_icon)
+        self.rail_downloads.setIconSize(QSize(22, 22))
+        self.rail_downloads.setText("Downloads")
+        self.rail_downloads.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_downloads.setToolTip("Downloads (Ctrl+J)")
         self.rail_downloads.clicked.connect(lambda: self._navigate_or_open_tab("gavix://downloads"))
         layout.addWidget(self.rail_downloads)
 
+        # 6. Extensions
         self.rail_extensions = QToolButton(rail)
-        self.rail_extensions.setText("🧩\nExtensions")
+        extensions_icon = self._create_nav_icon(
+            '<path d="M19.439 7.85c0-1.57.94-2.85 2.1-2.85V3a1 1 0 0 0-1-1h-2a2 2 0 0 0-2 2c0 1.1-.9 2-2 2s-2-.9-2-2a2 2 0 0 0-2-2H8.5a1 1 0 0 0-1 1v2c1.16 0 2.1 1.28 2.1 2.85s-.94 2.85-2.1 2.85V15a1 1 0 0 0 1 1h2a2 2 0 0 0 2-2c0-1.1.9-2 2-2s2 .9 2 2a2 2 0 0 0 2 2h2a1 1 0 0 0 1-1v-4.3c-1.16 0-2.1-1.28-2.1-2.85z"/>'
+        )
+        self.rail_extensions.setIcon(extensions_icon)
+        self.rail_extensions.setIconSize(QSize(22, 22))
+        self.rail_extensions.setText("Extensions")
+        self.rail_extensions.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_extensions.setToolTip("GAVIX Extensions (Shield Protected)")
         self.rail_extensions.clicked.connect(self._on_shield_clicked)
         layout.addWidget(self.rail_extensions)
 
         layout.addStretch()
 
+        # 7. Settings (Pinned at bottom)
         self.rail_settings = QToolButton(rail)
-        self.rail_settings.setText("⚙\nSettings")
+        settings_icon = self._create_nav_icon(
+            '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>'
+        )
+        self.rail_settings.setIcon(settings_icon)
+        self.rail_settings.setIconSize(QSize(22, 22))
+        self.rail_settings.setText("Settings")
+        self.rail_settings.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.rail_settings.setToolTip("Settings & Privacy")
         self.rail_settings.clicked.connect(lambda: self._navigate_or_open_tab("gavix://settings"))
         layout.addWidget(self.rail_settings)

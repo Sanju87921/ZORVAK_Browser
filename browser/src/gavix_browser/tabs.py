@@ -280,38 +280,40 @@ class GavixTabWidget(QTabWidget):
         self.setStyleSheet(f"""
             QTabWidget::pane {{
                 border: none;
-                background-color: {GavixColors.BG_MAIN};
+                background-color: transparent;
             }}
 
             QTabBar {{
-                background-color: {GavixColors.BG_MAIN};
+                background-color: #080D13;
                 qproperty-drawBase: 0;
             }}
 
             QTabBar::tab {{
-                background-color: {GavixColors.BG_SURFACE};
-                color: {GavixColors.TEXT_MUTED};
-                border: 1px solid {GavixColors.BORDER_SUBTLE};
+                background-color: #0F1722;
+                color: #94A3B8;
+                border: 1px solid rgba(255, 255, 255, 0.08);
                 border-bottom: none;
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
-                padding: 7px 16px;
+                padding: 6px 14px 6px 10px;
                 margin-right: 4px;
-                min-width: 120px;
-                max-width: 200px;
+                min-width: 140px;
+                max-width: 220px;
                 font-size: 12px;
+                font-weight: 500;
             }}
 
             QTabBar::tab:hover {{
-                background-color: {GavixColors.BG_HOVER};
-                color: {GavixColors.TEXT_PRIMARY};
+                background-color: #172232;
+                color: #FFFFFF;
+                border-color: rgba(255, 255, 255, 0.14);
             }}
 
             QTabBar::tab:selected {{
-                background-color: {GavixColors.BG_RAISED};
-                color: {GavixColors.EMERALD};
-                border-top: 2px solid {GavixColors.EMERALD};
-                border-color: {GavixColors.BORDER_MUTED} {GavixColors.BORDER_MUTED} {GavixColors.BG_RAISED} {GavixColors.BORDER_MUTED};
+                background-color: #1A2636;
+                color: #FFFFFF;
+                border: 1px solid rgba(0, 229, 153, 0.35);
+                border-bottom: 1px solid #1A2636;
                 font-weight: 600;
             }}
 
@@ -319,11 +321,12 @@ class GavixTabWidget(QTabWidget):
                 image: none;
                 subcontrol-position: right;
                 padding: 2px;
+                margin-left: 6px;
                 border-radius: 4px;
             }}
 
             QTabBar::close-button:hover {{
-                background-color: rgba(239, 68, 68, 0.4);
+                background-color: rgba(239, 68, 68, 0.5);
                 color: #FFFFFF;
             }}
         """)
@@ -336,7 +339,7 @@ class GavixTabWidget(QTabWidget):
         self.btn_new_tab.setStyleSheet(f"""
             QToolButton {{
                 background-color: transparent;
-                color: {GavixColors.TEXT_SECONDARY};
+                color: #94A3B8;
                 font-size: 16px;
                 font-weight: bold;
                 border: none;
@@ -345,8 +348,8 @@ class GavixTabWidget(QTabWidget):
                 margin: 2px 4px;
             }}
             QToolButton:hover {{
-                background-color: {GavixColors.BG_HOVER};
-                color: {GavixColors.EMERALD};
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #00E599;
             }}
         """)
         self.btn_new_tab.clicked.connect(lambda: self.new_tab())
@@ -355,7 +358,10 @@ class GavixTabWidget(QTabWidget):
     def new_tab(self, url: str = None) -> GavixTab:
         """Opens a new tab, optionally loading an initial URL, and focuses it."""
         tab = GavixTab(self)
-        idx = self.addTab(tab, "New Tab")
+        assets_dir = Path(__file__).resolve().parent.parent.parent / "assets"
+        icon_path = assets_dir / "gavix_icon.png"
+        tab_icon = QIcon(str(icon_path)) if icon_path.exists() else QIcon()
+        idx = self.addTab(tab, tab_icon, "New Tab")
 
         # Connect signals
         tab.title_updated.connect(lambda t: self._update_tab_title(tab, t))

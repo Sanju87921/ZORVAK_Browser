@@ -46,17 +46,24 @@ def get_app_stylesheet() -> str:
         font-size: 13px;
     }}
 
+    /* Top Chrome / Tab Bar Container */
+    #TopTabBar {{
+        background-color: #05080C;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 4px;
+    }}
+
     /* Top Chrome / Navigation Bar */
     #TopBar {{
-        background-color: {GavixColors.BG_MAIN};
-        border-bottom: 1px solid {GavixColors.BORDER_SUBTLE};
-        padding: 6px 12px;
+        background-color: #080D13;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        padding: 5px 12px;
     }}
 
     /* Action & Nav Buttons */
     QToolButton, QPushButton {{
         background-color: transparent;
-        color: {GavixColors.TEXT_SECONDARY};
+        color: #94A3B8;
         border: 1px solid transparent;
         border-radius: 8px;
         padding: 6px 10px;
@@ -64,41 +71,47 @@ def get_app_stylesheet() -> str:
     }}
 
     QToolButton:hover, QPushButton:hover {{
-        background-color: {GavixColors.BG_HOVER};
-        color: {GavixColors.TEXT_PRIMARY};
-        border: 1px solid {GavixColors.BORDER_MUTED};
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #F1F5F9;
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }}
 
     QToolButton:pressed, QPushButton:pressed {{
-        background-color: {GavixColors.BG_ACTIVE};
-        color: {GavixColors.EMERALD};
+        background-color: rgba(0, 229, 153, 0.2);
+        color: #00E599;
     }}
 
     QToolButton:disabled, QPushButton:disabled {{
-        color: {GavixColors.TEXT_MUTED};
+        color: #475569;
         background-color: transparent;
     }}
 
     /* Address Bar / Omnibox */
     #AddressBar {{
-        background-color: {GavixColors.BG_RAISED};
-        color: {GavixColors.TEXT_PRIMARY};
-        border: 1px solid {GavixColors.BORDER_MUTED};
-        border-radius: 10px;
+        background-color: rgba(20, 29, 40, 0.75);
+        color: #F1F5F9;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
         padding: 6px 14px;
         font-size: 13px;
-        selection-background-color: {GavixColors.EMERALD};
+        selection-background-color: #00E599;
         selection-color: #080B10;
     }}
 
+    #AddressBar:hover {{
+        border-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(26, 37, 52, 0.85);
+    }}
+
     #AddressBar:focus {{
-        border: 1px solid {GavixColors.BORDER_FOCUS};
-        background-color: #161E2B;
+        border: 1px solid #00E599;
+        background-color: #121B27;
+        color: #FFFFFF;
     }}
 
     /* Security / HTTPS Badge */
     #SecurityBadge {{
-        color: {GavixColors.EMERALD};
+        color: #00E599;
         font-weight: 600;
         font-size: 12px;
         padding-right: 6px;
@@ -108,30 +121,32 @@ def get_app_stylesheet() -> str:
     #NavRail {{
         background-color: #0A1118;
         border-right: 1px solid rgba(255, 255, 255, 0.06);
-        min-width: 72px;
-        max-width: 72px;
+        min-width: 78px;
+        max-width: 78px;
     }}
 
     #NavRail QToolButton {{
         border-radius: 12px;
-        padding: 10px 4px;
-        margin: 4px 6px;
-        color: rgba(255, 255, 255, 0.65);
-        font-size: 10px;
+        padding: 8px 4px 6px 4px;
+        margin: 2px 8px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 11px;
         font-weight: 500;
         border: 1px solid transparent;
+        qproperty-iconSize: 22px 22px;
     }}
 
     #NavRail QToolButton:hover {{
         background-color: rgba(255, 255, 255, 0.08);
         color: #FFFFFF;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }}
 
     #NavRail QToolButton[active="true"] {{
-        background-color: rgba(0, 229, 153, 0.15);
+        background-color: rgba(0, 229, 153, 0.14);
         color: #00E599;
-        border: 1px solid rgba(0, 229, 153, 0.4);
+        border: 1px solid rgba(0, 229, 153, 0.45);
+        font-weight: 600;
     }}
 
     /* Progress Bar */
