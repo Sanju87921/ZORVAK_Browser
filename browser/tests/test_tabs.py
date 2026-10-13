@@ -56,3 +56,28 @@ def test_main_window_with_tabs():
     assert window.tab_widget.count() >= 1
     assert window.current_tab is not None
     window.close()
+
+
+def test_internal_pages_routing():
+    app = QApplication.instance() or QApplication(sys.argv)
+    tab_widget = GavixTabWidget()
+    tab = tab_widget.new_tab()
+
+    # Verify routing to bookmarks
+    tab.navigate_to("gavix://bookmarks")
+    assert tab.is_home is False
+
+    # Verify routing to history
+    tab.navigate_to("gavix://history")
+    assert tab.is_home is False
+
+    # Verify routing to settings
+    tab.navigate_to("gavix://settings")
+    assert tab.is_home is False
+
+    # Verify routing to downloads
+    tab.navigate_to("gavix://downloads")
+    assert tab.is_home is False
+
+    tab_widget.close()
+

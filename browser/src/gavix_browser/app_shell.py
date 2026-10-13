@@ -250,19 +250,19 @@ class GavixMainWindow(QMainWindow):
         self.rail_bookmarks = QToolButton(rail)
         self.rail_bookmarks.setText("★\nMarks")
         self.rail_bookmarks.setToolTip("Bookmarks (Ctrl+B)")
-        self.rail_bookmarks.clicked.connect(self._on_open_bookmarks_dialog)
+        self.rail_bookmarks.clicked.connect(lambda: self._navigate_or_open_tab("gavix://bookmarks"))
         layout.addWidget(self.rail_bookmarks)
 
         self.rail_history = QToolButton(rail)
         self.rail_history.setText("⏱\nHistory")
         self.rail_history.setToolTip("Browsing History (Ctrl+H)")
-        self.rail_history.clicked.connect(self._on_open_history_dialog)
+        self.rail_history.clicked.connect(lambda: self._navigate_or_open_tab("gavix://history"))
         layout.addWidget(self.rail_history)
 
         self.rail_downloads = QToolButton(rail)
         self.rail_downloads.setText("↓\nDown")
         self.rail_downloads.setToolTip("Downloads (Ctrl+J)")
-        self.rail_downloads.clicked.connect(self._on_open_downloads_dialog)
+        self.rail_downloads.clicked.connect(lambda: self._navigate_or_open_tab("gavix://downloads"))
         layout.addWidget(self.rail_downloads)
 
         self.rail_extensions = QToolButton(rail)
@@ -282,7 +282,7 @@ class GavixMainWindow(QMainWindow):
         self.rail_settings = QToolButton(rail)
         self.rail_settings.setText("⚙\nConfig")
         self.rail_settings.setToolTip("Settings & Privacy")
-        self.rail_settings.clicked.connect(self._on_clear_data_clicked)
+        self.rail_settings.clicked.connect(lambda: self._navigate_or_open_tab("gavix://settings"))
         layout.addWidget(self.rail_settings)
 
         return rail
@@ -533,6 +533,13 @@ class GavixMainWindow(QMainWindow):
         else:
             self.nav_rail.show()
             self.status_bar.showMessage("Navigation Rail Expanded", 2000)
+
+    def _navigate_or_open_tab(self, url: str):
+        """Navigates current tab or opens a tab with the specified URL."""
+        if self.current_tab:
+            self.current_tab.navigate_to(url)
+        else:
+            self.tab_widget.new_tab(url)
 
     def _on_shield_clicked(self):
         """Displays GAVIX Shield protection status dialog."""

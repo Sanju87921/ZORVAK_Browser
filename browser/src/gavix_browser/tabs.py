@@ -21,6 +21,13 @@ from gavix_browser.home_page import get_home_page_html
 from gavix_browser.theme import GavixColors
 from gavix_browser.search_client import GavixSearchClient
 from gavix_browser.search_results import render_search_results_html
+from gavix_browser.internal_pages import (
+    render_bookmarks_page_html,
+    render_history_page_html,
+    render_downloads_page_html,
+    render_settings_page_html
+)
+from gavix_browser.storage import GavixStorage
 
 
 class GavixTab(QWidget):
@@ -116,6 +123,96 @@ class GavixTab(QWidget):
             query = qs.get("q", [""])[0]
             if query:
                 self.execute_search(query)
+                return
+
+        # Internal pages routing
+        assets_dir = Path(__file__).resolve().parent.parent.parent / "assets"
+        storage = GavixStorage()
+
+        if url.startswith("gavix://bookmarks"):
+            self.is_home = False
+            self.current_search_query = None
+            html = render_bookmarks_page_html(storage)
+            self.web_view.setHtml(html, QUrl.fromLocalFile(str(assets_dir / "home.html")))
+            self.title_updated.emit("Bookmarks — GAVIX")
+            self.url_updated.emit("gavix://bookmarks")
+            return
+
+        if url.startswith("gavix://history"):
+            self.is_home = False
+            self.current_search_query = None
+            html = render_history_page_html(storage)
+            self.web_view.setHtml(html, QUrl.fromLocalFile(str(assets_dir / "home.html")))
+            self.title_updated.emit("History — GAVIX")
+            self.url_updated.emit("gavix://history")
+            return
+
+        if url.startswith("gavix://downloads"):
+            self.is_home = False
+            self.current_search_query = None
+            # Retrieve downloads if parent main window has download manager
+            downloads = []
+            main_win = self.window()
+            if hasattr(main_win, "download_manager"):
+                downloads = main_win.download_manager.get_downloads()
+            html = render_downloads_page_html(downloads)
+            self.web_view.setHtml(html, QUrl.fromLocalFile(str(assets_dir / "home.html")))
+            self.title_updated.emit("Downloads — GAVIX")
+            self.url_updated.emit("gavix://downloads")
+            return
+
+        if url.startswith("gavix://settings"):
+            self.is_home = False
+            self.current_search_query = None
+            parsed_s = urlparse(url)
+            qs_s = parse_qs(parsed_s.query)
+            section = qs_s.get("section", ["general"])[0]
+            html = render_settings_page_html(section)
+            self.web_view.setHtml(html, QUrl.fromLocalFile(str(assets_dir / "home.html")))
+            self.title_updated.emit("Settings — GAVIX")
+            self.url_updated.emit(url)
+            return
+
+        # Internal actions routing (e.g. bookmarks / history management)
+        if url.startswith("gavix://action/"):
+            action = url[len("gavix://action/"):].split("?")[0]
+            parsed_act = urlparse(url)
+            qs_act = parse_qs(parsed_act.query)
+            if action == "add_bookmark":
+                u = qs_act.get("url", [""])[0]
+                t = qs_act.get("title", [""])[0]
+                if u:
+                    storage.add_bookmark(u, t)
+                self.navigate_to("gavix://bookmarks")
+                return
+            elif action == "remove_bookmark":
+                u = qs_act.get("url", [""])[0]
+                if u:
+                    storage.remove_bookmark(u)
+                self.navigate_to("gavix://bookmarks")
+                return
+            elif action == "clear_history":
+                storage.clear_history()
+                self.navigate_to("gavix://history")
+                return
+            elif action == "remove_history":
+                u = qs_act.get("url", [""])[0]
+                # remove single history entry
+                with storage._get_connection() as conn:
+                    conn.execute("DELETE FROM history WHERE url = ?", (u,))
+                    conn.commit()
+                self.navigate_to("gavix://history")
+                return
+            elif action == "open_downloads_folder":
+                import os
+                os.startfile(str(Path.home() / "Downloads"))
+                self.navigate_to("gavix://downloads")
+                return
+            elif action == "open_clear_data_dialog":
+                main_win = self.window()
+                if hasattr(main_win, "_on_clear_data_clicked"):
+                    main_win._on_clear_data_clicked()
+                self.navigate_to("gavix://settings?section=privacy")
                 return
 
         self.is_home = False

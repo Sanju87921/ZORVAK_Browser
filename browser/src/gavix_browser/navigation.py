@@ -13,7 +13,7 @@ COMMON_TLDS = {
     "dev", "app", "me", "info", "biz", "xyz", "online", "tech", "site"
 }
 
-SAFE_SCHEMES = {"http", "https", "file", "about"}
+SAFE_SCHEMES = {"http", "https", "file", "about", "gavix"}
 
 
 def is_valid_url_or_domain(text: str) -> tuple[bool, str]:
