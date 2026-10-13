@@ -104,30 +104,32 @@ def get_app_stylesheet() -> str:
         padding-right: 6px;
     }}
 
-    /* Left Navigation Rail */
+    /* Left Navigation Rail (Translucent Glassmorphism) */
     #NavRail {{
-        background-color: {GavixColors.BG_SURFACE};
-        border-right: 1px solid {GavixColors.BORDER_SUBTLE};
+        background-color: rgba(14, 20, 30, 0.55);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
         min-width: 64px;
         max-width: 64px;
     }}
 
     #NavRail QToolButton {{
-        border-radius: 12px;
-        padding: 10px;
-        margin: 4px 8px;
-        color: {GavixColors.TEXT_SECONDARY};
+        border-radius: 10px;
+        padding: 8px 4px;
+        margin: 3px 6px;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 11px;
     }}
 
     #NavRail QToolButton:hover {{
-        background-color: {GavixColors.BG_HOVER};
-        color: {GavixColors.TEXT_PRIMARY};
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }}
 
     #NavRail QToolButton[active="true"] {{
-        background-color: {GavixColors.EMERALD_MUTED};
-        color: {GavixColors.EMERALD};
-        border-left: 2px solid {GavixColors.EMERALD};
+        background-color: rgba(0, 229, 153, 0.14);
+        color: #00E599;
+        border: 1px solid rgba(0, 229, 153, 0.35);
     }}
 
     /* Progress Bar */

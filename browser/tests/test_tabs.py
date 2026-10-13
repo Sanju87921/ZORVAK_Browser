@@ -19,7 +19,7 @@ def test_home_page_html_generation():
     html = get_home_page_html()
     assert "<!DOCTYPE html>" in html
     assert "GAVIX" in html
-    assert "Gateway for Advanced Virtual Internet Experience" in html
+    assert "GATEWAY FOR ADVANCED VIRTUAL INTERNET EXPERIENCE" in html.upper()
     assert "shortcuts-row" in html
     assert "search-input" in html
 

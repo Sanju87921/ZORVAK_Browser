@@ -241,11 +241,11 @@ class GavixMainWindow(QMainWindow):
         self.rail_home.clicked.connect(self._on_home_clicked)
         layout.addWidget(self.rail_home)
 
-        self.rail_ai = QToolButton(rail)
-        self.rail_ai.setText("✦\nAI")
-        self.rail_ai.setToolTip("Toggle GAVIX AI Assistant (Ctrl+I)")
-        self.rail_ai.clicked.connect(self._on_toggle_ai_panel)
-        layout.addWidget(self.rail_ai)
+        self.rail_search = QToolButton(rail)
+        self.rail_search.setText("🔍\nSearch")
+        self.rail_search.setToolTip("Focus Search (Ctrl+L)")
+        self.rail_search.clicked.connect(self._on_focus_address_bar)
+        layout.addWidget(self.rail_search)
 
         self.rail_bookmarks = QToolButton(rail)
         self.rail_bookmarks.setText("★\nMarks")
@@ -264,6 +264,18 @@ class GavixMainWindow(QMainWindow):
         self.rail_downloads.setToolTip("Downloads (Ctrl+J)")
         self.rail_downloads.clicked.connect(self._on_open_downloads_dialog)
         layout.addWidget(self.rail_downloads)
+
+        self.rail_extensions = QToolButton(rail)
+        self.rail_extensions.setText("🧩\nExt")
+        self.rail_extensions.setToolTip("GAVIX Extensions (Shield Protected)")
+        self.rail_extensions.clicked.connect(self._on_shield_clicked)
+        layout.addWidget(self.rail_extensions)
+
+        self.rail_ai = QToolButton(rail)
+        self.rail_ai.setText("✦\nAI")
+        self.rail_ai.setToolTip("Toggle GAVIX AI Assistant (Ctrl+I)")
+        self.rail_ai.clicked.connect(self._on_toggle_ai_panel)
+        layout.addWidget(self.rail_ai)
 
         layout.addStretch()
 
