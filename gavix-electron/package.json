@@ -1,0 +1,20 @@
+{
+  "name": "gavix-browser",
+  "version": "1.0.0",
+  "description": "GAVIX — Privacy-First, Zero-Tracking Browser and Search Engine",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "browser",
+    "privacy",
+    "search",
+    "electron"
+  ],
+  "author": "Amar & Friend",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.4.11"
+  }
+}

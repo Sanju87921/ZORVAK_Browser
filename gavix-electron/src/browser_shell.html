@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GAVIX Browser</title>
+  <link rel="stylesheet" href="browser_shell.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Top Chrome: Tab Bar & Navigation Omnibox -->
+    <header id="chrome-header">
+      <div id="tab-bar">
+        <div id="tabs-container">
+          <div class="tab active" data-tab-id="1">
+            <img src="../assets/gavix_icon.png" class="tab-icon" alt="icon">
+            <span class="tab-title">New Tab</span>
+            <button class="tab-close" title="Close Tab">&times;</button>
+          </div>
+        </div>
+        <button id="add-tab-btn" title="Open new tab">+</button>
+        <div class="window-drag-area"></div>
+      </div>
+
+      <div id="nav-toolbar">
+        <div class="nav-controls">
+          <button id="btn-back" class="nav-btn" title="Back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <button id="btn-forward" class="nav-btn" title="Forward">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button id="btn-reload" class="nav-btn" title="Reload">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+
+        <div id="omnibox-wrapper">
+          <div class="omnibox-leading-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00E599" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <input type="text" id="omnibox-input" placeholder="Search GAVIX or type a URL" spellcheck="false" autocomplete="off">
+          <div class="omnibox-trailing-icons">
+            <button id="shield-btn" class="omni-icon-btn" title="GAVIX Privacy Shield: Active">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00E599" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="toolbar-actions">
+          <button class="action-btn" id="btn-privacy-status" title="Extensions">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </button>
+          <button class="action-btn" id="btn-bookmarks" title="Bookmarks">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+          <button class="action-btn" id="btn-downloads" title="Downloads">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          </button>
+          <div class="avatar-badge" title="GAVIX Secure Profile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00E599" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace: Sidebar + Browsing Content -->
+    <div id="main-layout">
+      <!-- Left Sidebar (Matching Screenshot) -->
+      <aside id="sidebar">
+        <button class="side-item active" id="side-home" title="Home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="side-item" id="side-search" title="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Search</span>
+        </button>
+        <button class="side-item" id="side-bookmarks" title="Bookmarks">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span>Bookmarks</span>
+        </button>
+        <button class="side-item" id="side-history" title="History">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>History</span>
+        </button>
+        <button class="side-item" id="side-downloads" title="Downloads">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span>Downloads</span>
+        </button>
+        <button class="side-item" id="side-extensions" title="Extensions">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span>Extensions</span>
+        </button>
+        <div class="sidebar-spacer"></div>
+        <button class="side-item" id="side-settings" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </aside>
+
+      <!-- Web Content View Container -->
+      <main id="browser-viewport">
+        <!-- New Tab View (Direct friend assets/home.html iframe) -->
+        <iframe id="newtab-frame" src="../assets/home.html"></iframe>
+        
+        <!-- Live Webview for actual web pages & search results -->
+        <webview id="active-webview" class="hidden" src="about:blank"></webview>
+      </main>
+    </div>
+  </div>
+
+  <script src="browser_shell.js"></script>
+</body>
+</html>

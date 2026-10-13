@@ -21,3 +21,4 @@ htmlcov/
 .user_uploaded/
 scratch/
 GavixBrowser/profile/
+node_modules/
