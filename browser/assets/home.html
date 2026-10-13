@@ -52,6 +52,30 @@
     /* Hero Brand Typography */
     .hero-brand {
       margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand-title-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .brand-logo {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(0, 229, 153, 0.65));
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .brand-logo:hover {
+      transform: scale(1.08) rotate(-3deg);
+      filter: drop-shadow(0 0 24px rgba(0, 229, 153, 0.9));
     }
 
     .brand-title {
@@ -65,7 +89,8 @@
       background: linear-gradient(135deg, #FFFFFF 30%, var(--accent-emerald) 90%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      margin-bottom: 0;
+      line-height: 1;
     }
 
     .tagline {
@@ -269,7 +294,10 @@
 
   <div class="container">
     <div class="hero-brand">
-      <div class="brand-title">GAVIX</div>
+      <div class="brand-title-row">
+        <img src="gavix_icon.png" alt="GAVIX Logo" class="brand-logo">
+        <div class="brand-title">GAVIX</div>
+      </div>
       <div class="tagline">Gateway for Advanced Virtual Internet Experience</div>
       <div class="sub-tagline">Your Internet. Your Control. Fully Local &amp; Private.</div>
     </div>
