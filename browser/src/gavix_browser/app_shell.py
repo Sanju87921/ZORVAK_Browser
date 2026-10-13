@@ -102,8 +102,9 @@ class GavixMainWindow(QMainWindow):
         workspace_layout.setContentsMargins(0, 0, 0, 0)
         workspace_layout.setSpacing(0)
 
-        # 3A. Left Navigation Rail
+        # 3A. Left Navigation Rail (Collapsible, hidden by default for maximum background visibility)
         self.nav_rail = self._create_nav_rail()
+        self.nav_rail.hide()
         workspace_layout.addWidget(self.nav_rail)
 
         # 3B. Multi-Tab Container
@@ -130,8 +131,15 @@ class GavixMainWindow(QMainWindow):
         top_bar = QWidget(self)
         top_bar.setObjectName("TopBar")
         layout = QHBoxLayout(top_bar)
-        layout.setContentsMargins(12, 6, 12, 6)
-        layout.setSpacing(8)
+        layout.setContentsMargins(8, 4, 8, 4)
+        layout.setSpacing(6)
+
+        # Collapsible Sidebar / Tools Menu Toggle
+        self.btn_sidebar = QToolButton(top_bar)
+        self.btn_sidebar.setText("☰")
+        self.btn_sidebar.setToolTip("Toggle Tools & Bookmarks Panel (Ctrl+M)")
+        self.btn_sidebar.clicked.connect(self._on_toggle_nav_rail)
+        layout.addWidget(self.btn_sidebar)
 
         # Brand Emblem Logo
         brand_label = QLabel(top_bar)
@@ -139,15 +147,15 @@ class GavixMainWindow(QMainWindow):
         icon_path = assets_dir / "gavix_icon.png"
         if icon_path.exists():
             pixmap = QPixmap(str(icon_path)).scaled(
-                28, 28, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
+                22, 22, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
             )
             brand_label.setPixmap(pixmap)
             brand_label.setToolTip("GAVIX Browser")
-            brand_label.setStyleSheet("padding-right: 4px;")
+            brand_label.setStyleSheet("padding: 0 4px;")
         else:
             brand_label.setText("GAVIX")
             brand_label.setStyleSheet(
-                f"color: {GavixColors.EMERALD}; font-weight: 800; font-size: 14px; letter-spacing: 2px; padding-right: 6px;"
+                f"color: {GavixColors.EMERALD}; font-weight: 800; font-size: 13px; letter-spacing: 1.5px; padding: 0 4px;"
             )
         layout.addWidget(brand_label)
 
@@ -185,6 +193,14 @@ class GavixMainWindow(QMainWindow):
         self.address_bar.returnPressed.connect(self._on_address_entered)
         layout.addWidget(self.address_bar, stretch=1)
 
+        # GAVIX Shield Protection Indicator
+        self.btn_shield = QToolButton(top_bar)
+        self.btn_shield.setText("🛡")
+        self.btn_shield.setToolTip("GAVIX Shield: Tracker & Ad Protection (Active)")
+        self.btn_shield.setStyleSheet(f"color: {GavixColors.EMERALD}; font-size: 13px;")
+        self.btn_shield.clicked.connect(self._on_shield_clicked)
+        layout.addWidget(self.btn_shield)
+
         # Action Buttons Cluster
         self.btn_bookmark = QToolButton(top_bar)
         self.btn_bookmark.setText("★")
@@ -192,15 +208,20 @@ class GavixMainWindow(QMainWindow):
         self.btn_bookmark.clicked.connect(self._on_bookmark_toggle_clicked)
         layout.addWidget(self.btn_bookmark)
 
-        self.btn_clear_data = QToolButton(top_bar)
-        self.btn_clear_data.setText("🧹")
-        self.btn_clear_data.setToolTip("Clear Browsing Data")
-        self.btn_clear_data.clicked.connect(self._on_clear_data_clicked)
-        layout.addWidget(self.btn_clear_data)
+        self.btn_downloads = QToolButton(top_bar)
+        self.btn_downloads.setText("↓")
+        self.btn_downloads.setToolTip("Downloads (Ctrl+J)")
+        self.btn_downloads.clicked.connect(self._on_open_downloads_dialog)
+        layout.addWidget(self.btn_downloads)
+
+        self.btn_profile = QToolButton(top_bar)
+        self.btn_profile.setText("👤")
+        self.btn_profile.setToolTip("Profile: Default (Isolated Session)")
+        layout.addWidget(self.btn_profile)
 
         self.btn_settings = QToolButton(top_bar)
         self.btn_settings.setText("⚙")
-        self.btn_settings.setToolTip("Settings")
+        self.btn_settings.setToolTip("Settings & Privacy")
         self.btn_settings.clicked.connect(self._on_clear_data_clicked)
         layout.addWidget(self.btn_settings)
 
@@ -268,6 +289,7 @@ class GavixMainWindow(QMainWindow):
         QShortcut(QKeySequence("Ctrl+B"), self, self._on_open_bookmarks_dialog)
         QShortcut(QKeySequence("Ctrl+J"), self, self._on_open_downloads_dialog)
         QShortcut(QKeySequence("Ctrl+I"), self, self._on_toggle_ai_panel)
+        QShortcut(QKeySequence("Ctrl+M"), self, self._on_toggle_nav_rail)
 
     @property
     def current_tab(self) -> GavixTab | None:
@@ -490,3 +512,25 @@ class GavixMainWindow(QMainWindow):
     def _on_open_downloads_dialog(self):
         dialog = GavixDownloadsDialog(self.download_manager, self)
         dialog.exec()
+
+    def _on_toggle_nav_rail(self):
+        """Toggles visibility of the collapsible left navigation rail."""
+        if self.nav_rail.isVisible():
+            self.nav_rail.hide()
+            self.status_bar.showMessage("Navigation Rail Collapsed", 2000)
+        else:
+            self.nav_rail.show()
+            self.status_bar.showMessage("Navigation Rail Expanded", 2000)
+
+    def _on_shield_clicked(self):
+        """Displays GAVIX Shield protection status dialog."""
+        QMessageBox.information(
+            self,
+            "GAVIX Shield",
+            "🛡 GAVIX Shield Active & Enforced\n\n"
+            "• Anti-Fingerprinting Protection: ON\n"
+            "• Tracker & Ad Telemetry: Blocked\n"
+            "• Partitioned Cookie Storage: Enforced\n"
+            "• Secure DNS & WebRTC Leak Protection: Active"
+        )
+

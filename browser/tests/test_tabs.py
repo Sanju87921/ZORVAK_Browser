@@ -20,8 +20,8 @@ def test_home_page_html_generation():
     assert "<!DOCTYPE html>" in html
     assert "GAVIX" in html
     assert "Gateway for Advanced Virtual Internet Experience" in html
-    assert "status-card" in html
-    assert "shortcuts-grid" in html
+    assert "shortcuts-row" in html
+    assert "search-input" in html
 
 
 def test_tab_widget_lifecycle():

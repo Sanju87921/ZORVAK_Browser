@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAVIX Home</title>
+  <title>New Tab</title>
   <style>
     :root {
-      --bg-card: rgba(14, 20, 30, 0.72);
-      --bg-card-hover: rgba(24, 34, 50, 0.85);
-      --border-subtle: rgba(255, 255, 255, 0.12);
+      --glass-bg: rgba(12, 17, 26, 0.16);
+      --glass-bg-hover: rgba(20, 28, 42, 0.28);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-border-focus: rgba(0, 229, 153, 0.55);
       --accent-emerald: #00E599;
-      --accent-cyan: #06B6D4;
-      --text-main: #F1F5F9;
-      --text-muted: #94A3B8;
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255, 255, 255, 0.72);
+      --text-muted: rgba(255, 255, 255, 0.5);
     }
 
     * {
@@ -21,353 +22,366 @@
       padding: 0;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
-      background-color: #07090E;
       background: 
-        linear-gradient(rgba(7, 10, 15, 0.65), rgba(9, 14, 22, 0.80)),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.3) 100%),
         url('bg_image.png') no-repeat center center fixed;
       background-size: cover;
-      color: var(--text-main);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-primary);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 50px 24px 32px;
-      overflow-x: hidden;
+      justify-content: center;
       user-select: none;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .container {
+    /* Main Center Wrapper */
+    .hero-container {
       width: 100%;
-      max-width: 860px;
+      max-width: 640px;
+      padding: 0 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin-top: 10px;
+      margin-top: -4vh; /* Subtle upper-middle optical balance */
+      animation: fadeIn 0.4s ease-out;
     }
 
-    /* Hero Brand Typography */
-    .hero-brand {
-      margin-bottom: 24px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Brand Lockup */
+    .brand-lockup {
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-bottom: 26px;
     }
 
-    .brand-title-row {
+    .brand-header {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      margin-bottom: 8px;
+      gap: 13px;
+      margin-bottom: 6px;
     }
 
-    .brand-logo {
-      width: 58px;
-      height: 58px;
+    .brand-emblem {
+      width: 44px;
+      height: 44px;
       object-fit: contain;
-      filter: drop-shadow(0 0 16px rgba(0, 229, 153, 0.65));
-      transition: transform 0.3s ease, filter 0.3s ease;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 10px rgba(0, 229, 153, 0.35));
+      transition: transform 0.25s ease;
     }
 
-    .brand-logo:hover {
-      transform: scale(1.08) rotate(-3deg);
-      filter: drop-shadow(0 0 24px rgba(0, 229, 153, 0.9));
+    .brand-header:hover .brand-emblem {
+      transform: scale(1.06);
     }
 
     .brand-title {
-      font-size: 54px;
-      font-weight: 900;
-      letter-spacing: 12px;
-      color: #FFFFFF;
-      text-shadow: 
-        0 0 24px rgba(0, 229, 153, 0.7),
-        0 0 50px rgba(0, 229, 153, 0.35);
-      background: linear-gradient(135deg, #FFFFFF 30%, var(--accent-emerald) 90%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      color: var(--text-primary);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       line-height: 1;
     }
 
-    .tagline {
+    .brand-tagline {
       font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent-emerald);
-      text-shadow: 0 0 12px rgba(0, 229, 153, 0.4);
+      font-weight: 400;
+      letter-spacing: 0.6px;
+      color: var(--text-secondary);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
     }
 
-    .sub-tagline {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    /* Search Bar */
+    /* Central Search Bar */
     .search-wrapper {
       width: 100%;
-      max-width: 680px;
-      margin: 30px 0 32px;
+      margin-bottom: 28px;
       position: relative;
+    }
+
+    .search-form {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      width: 17px;
+      height: 17px;
+      fill: var(--text-muted);
+      pointer-events: none;
+      transition: fill 0.2s ease;
     }
 
     .search-input {
       width: 100%;
-      background: var(--bg-card);
+      height: 48px;
+      background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 16px 58px 16px 22px;
-      font-size: 16px;
-      color: var(--text-main);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 0 48px 0 46px;
+      font-size: 15px;
+      color: var(--text-primary);
       outline: none;
-      transition: all 0.25s ease;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-
-    .search-input:focus {
-      border-color: var(--accent-emerald);
-      box-shadow: 0 0 0 3px rgba(0, 229, 153, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6);
-      background: rgba(18, 26, 38, 0.95);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
     }
 
     .search-input::placeholder {
       color: var(--text-muted);
-      font-size: 15px;
+      font-weight: 400;
+    }
+
+    .search-input:hover {
+      background: var(--glass-bg-hover);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .search-input:focus {
+      background: rgba(10, 14, 22, 0.32);
+      border-color: var(--glass-border-focus);
+      box-shadow: 0 0 0 3px rgba(0, 229, 153, 0.12), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-input:focus ~ .search-icon {
+      fill: var(--accent-emerald);
     }
 
     .search-btn {
       position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));
+      right: 7px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
       border: none;
-      border-radius: 10px;
-      width: 40px;
-      height: 40px;
+      background: transparent;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-    }
-
-    .search-btn:hover {
-      transform: translateY(-50%) scale(1.05);
-      filter: brightness(1.15);
+      transition: all 0.2s ease;
     }
 
     .search-btn svg {
-      fill: #06090E;
-      width: 19px;
-      height: 19px;
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
     }
 
-    /* Shortcut Grid */
-    .shortcuts-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
+    .search-btn:hover {
+      background: rgba(0, 229, 153, 0.2);
+      color: var(--accent-emerald);
+      transform: scale(1.05);
+    }
+
+    /* Shortcuts Row */
+    .shortcuts-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
       gap: 16px;
-      width: 100%;
-      max-width: 680px;
-      margin-bottom: 40px;
+      flex-wrap: nowrap;
     }
 
-    .shortcut-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 16px 10px;
+    .shortcut-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
       text-decoration: none;
-      color: var(--text-main);
-      transition: all 0.2s ease;
+      color: var(--text-primary);
       cursor: pointer;
+      width: 66px;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .shortcut-card:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-3px);
-      border-color: rgba(0, 229, 153, 0.4);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 229, 153, 0.15);
+    .shortcut-item:hover {
+      transform: translateY(-2px);
     }
 
-    .shortcut-icon {
+    .shortcut-tile {
       width: 44px;
       height: 44px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 7px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
     }
 
-    .shortcut-title {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
+    .shortcut-item:hover .shortcut-tile {
+      background: var(--glass-bg-hover);
+      border-color: rgba(0, 229, 153, 0.35);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.26), 0 0 10px rgba(0, 229, 153, 0.1);
     }
 
-    .shortcut-card:hover .shortcut-title {
-      color: var(--text-main);
-    }
-
-    /* Real Status Cards */
-    .status-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      width: 100%;
-      max-width: 820px;
-      margin-top: auto;
-    }
-
-    .status-card {
-      background: rgba(14, 20, 30, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 14px 18px;
-      text-align: left;
+    .shortcut-icon {
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      justify-content: center;
     }
 
-    .status-indicator {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent-emerald);
-      box-shadow: 0 0 8px var(--accent-emerald);
-      flex-shrink: 0;
+    .shortcut-icon svg {
+      width: 100%;
+      height: 100%;
     }
 
-    .status-card.connecting .status-indicator {
-      background: var(--accent-cyan);
-      box-shadow: 0 0 8px var(--accent-cyan);
-    }
-
-    .status-card.offline .status-indicator {
-      background: #EAB308;
-      box-shadow: 0 0 8px #EAB308;
-    }
-
-    .status-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .status-desc {
+    .shortcut-label {
       font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 64px;
+      text-align: center;
+      transition: color 0.2s ease;
     }
 
-    @media (max-width: 680px) {
-      .status-row {
-        grid-template-columns: 1fr;
-      }
-      .shortcuts-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
+    .shortcut-item:hover .shortcut-label {
+      color: var(--text-primary);
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="hero-brand">
-      <div class="brand-title-row">
-        <img src="gavix_icon.png" alt="GAVIX Logo" class="brand-logo">
-        <div class="brand-title">GAVIX</div>
+  <div class="hero-container">
+    <!-- Brand Lockup -->
+    <div class="brand-lockup">
+      <div class="brand-header">
+        <img src="gavix_icon.png" alt="GAVIX" class="brand-emblem">
+        <h1 class="brand-title">GAVIX</h1>
       </div>
-      <div class="tagline">Gateway for Advanced Virtual Internet Experience</div>
-      <div class="sub-tagline">Your Internet. Your Control. Fully Local &amp; Private.</div>
+      <p class="brand-tagline">Gateway for Advanced Virtual Internet Experience</p>
     </div>
 
-    <form class="search-wrapper" id="searchForm" onsubmit="handleSearch(event)">
-      <input 
-        type="text" 
-        id="queryInput" 
-        class="search-input" 
-        placeholder="Search with GAVIX or enter web address..." 
-        autocomplete="off"
-        autofocus
-      >
-      <button type="submit" class="search-btn" title="Search">
-        <svg viewBox="0 0 24 24">
+    <!-- Central Search Bar -->
+    <div class="search-wrapper">
+      <form class="search-form" id="searchForm" onsubmit="handleSearch(event)">
+        <svg class="search-icon" viewBox="0 0 24 24">
           <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
         </svg>
-      </button>
-    </form>
-
-    <div class="shortcuts-grid">
-      <div class="shortcut-card" onclick="openUrl('https://www.google.com')">
-        <div class="shortcut-icon" style="color: #4285F4;">G</div>
-        <span class="shortcut-title">Google</span>
-      </div>
-      <div class="shortcut-card" onclick="openUrl('https://www.youtube.com')">
-        <div class="shortcut-icon" style="color: #FF0000;">▶</div>
-        <span class="shortcut-title">YouTube</span>
-      </div>
-      <div class="shortcut-card" onclick="openUrl('https://www.wikipedia.org')">
-        <div class="shortcut-icon" style="color: #E2E8F0;">W</div>
-        <span class="shortcut-title">Wikipedia</span>
-      </div>
-      <div class="shortcut-card" onclick="openUrl('https://github.com')">
-        <div class="shortcut-icon" style="color: #00E599;">⌘</div>
-        <span class="shortcut-title">GitHub</span>
-      </div>
-      <div class="shortcut-card" onclick="openUrl('https://hampistays.com')">
-        <div class="shortcut-icon" style="color: #F59E0B;">🏛</div>
-        <span class="shortcut-title">HampiStays</span>
-      </div>
-      <div class="shortcut-card" onclick="promptAddShortcut()">
-        <div class="shortcut-icon" style="color: var(--accent-cyan); font-weight: 300;">+</div>
-        <span class="shortcut-title">Add Tile</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="status-row">
-    <div class="status-card">
-      <div class="status-indicator"></div>
-      <div>
-        <div class="status-title">Isolated Local Storage</div>
-        <div class="status-desc">Persistent profile safe in %LOCALAPPDATA%</div>
-      </div>
+        <input 
+          type="text" 
+          id="queryInput" 
+          class="search-input" 
+          placeholder="Search with GAVIX or enter address" 
+          autocomplete="off"
+          autofocus
+        >
+        <button type="submit" class="search-btn" title="Search">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
     </div>
 
-    <div class="status-card connecting">
-      <div class="status-indicator"></div>
-      <div>
-        <div class="status-title">Zero Third-Party Leaks</div>
-        <div class="status-desc">No telemetry sent to Google or Brave</div>
+    <!-- Compact Horizontal Shortcuts Row -->
+    <div class="shortcuts-row">
+      <!-- Google -->
+      <div class="shortcut-item" onclick="openUrl('https://www.google.com')">
+        <div class="shortcut-tile">
+          <div class="shortcut-icon">
+            <svg viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.35 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+          </div>
+        </div>
+        <span class="shortcut-label">Google</span>
       </div>
-    </div>
 
-    <div class="status-card offline">
-      <div class="status-indicator"></div>
-      <div>
-        <div class="status-title">GAVIX Search Ready</div>
-        <div class="status-desc">Awaiting Amar's Search API at port 8000</div>
+      <!-- YouTube -->
+      <div class="shortcut-item" onclick="openUrl('https://www.youtube.com')">
+        <div class="shortcut-tile">
+          <div class="shortcut-icon">
+            <svg viewBox="0 0 24 24">
+              <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
+              <polygon fill="#FFFFFF" points="9.545,15.568 15.818,12 9.545,8.432"/>
+            </svg>
+          </div>
+        </div>
+        <span class="shortcut-label">YouTube</span>
+      </div>
+
+      <!-- Wikipedia -->
+      <div class="shortcut-item" onclick="openUrl('https://www.wikipedia.org')">
+        <div class="shortcut-tile">
+          <div class="shortcut-icon">
+            <svg viewBox="0 0 24 24" fill="#E2E8F0">
+              <path d="M12.09 13.12 9.77 5.75H7.28L3.25 18.25h2.22l.98-3.32h4.52l.94 3.32h2.2l-2.02-5.13zm-5.06-.11 1.7-5.78 1.73 5.78H7.03zm13.72-7.26h-2.48l-2.32 7.37-2.03-5.13-1.63 4.19 1.83 5.94h2.22l.98-3.32h4.52l.94 3.32h2.2L20.75 5.75zm-3.69 7.15 1.7-5.78 1.73 5.78h-3.43z"/>
+            </svg>
+          </div>
+        </div>
+        <span class="shortcut-label">Wikipedia</span>
+      </div>
+
+      <!-- GitHub -->
+      <div class="shortcut-item" onclick="openUrl('https://github.com')">
+        <div class="shortcut-tile">
+          <div class="shortcut-icon">
+            <svg viewBox="0 0 24 24" fill="#FFFFFF">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+          </div>
+        </div>
+        <span class="shortcut-label">GitHub</span>
+      </div>
+
+      <!-- HampiStays -->
+      <div class="shortcut-item" onclick="openUrl('https://hampistays.com')">
+        <div class="shortcut-tile">
+          <div class="shortcut-icon">
+            <svg viewBox="0 0 24 24" fill="#F59E0B">
+              <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+            </svg>
+          </div>
+        </div>
+        <span class="shortcut-label">HampiStays</span>
+      </div>
+
+      <!-- Add Site -->
+      <div class="shortcut-item" onclick="promptAddShortcut()">
+        <div class="shortcut-tile">
+          <div class="shortcut-icon">
+            <svg viewBox="0 0 24 24" stroke="rgba(255,255,255,0.7)" stroke-width="2" fill="none" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+        </div>
+        <span class="shortcut-label">Add Site</span>
       </div>
     </div>
   </div>
@@ -392,7 +406,7 @@
     }
 
     function promptAddShortcut() {
-      const url = prompt("Enter website URL (e.g., https://reddit.com):");
+      const url = prompt("Enter website URL (e.g., https://example.com):");
       if (url) {
         window.location.href = url.startsWith('http') ? url : 'https://' + url;
       }
