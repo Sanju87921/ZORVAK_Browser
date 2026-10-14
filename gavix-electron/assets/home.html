@@ -29,7 +29,7 @@
     }
 
     body {
-      background: url('gavix_final_bg_hd.png') no-repeat center top fixed;
+      background: url('test_seamless_bg.png') no-repeat center center fixed;
       background-size: cover;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       color: var(--text-primary);
@@ -50,7 +50,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin-top: 10vh; /* Perfectly aligns search bar beneath tagline */
+      gap: 24px;
       animation: fadeIn 0.4s ease-out;
     }
 
@@ -64,15 +64,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 24px;
       width: 100%;
     }
 
     .brand-logo-img {
-      width: 440px;
-      max-width: 90%;
+      width: 408px;
+      max-width: 100%;
       height: auto;
       object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
       filter: drop-shadow(0 0 16px rgba(0, 229, 153, 0.4));
       transition: transform 0.25s ease, filter 0.25s ease;
       cursor: pointer;
@@ -86,7 +86,6 @@
     /* Central Search Bar */
     .search-wrapper {
       width: 100%;
-      margin-bottom: 28px;
       position: relative;
     }
 
@@ -309,7 +308,6 @@
       justify-content: center;
       gap: 24px;
       flex-wrap: nowrap;
-      margin-top: 4px;
     }
 
     .shortcut-item {
@@ -395,8 +393,10 @@
     <span class="weather-loc">Bengaluru</span>
   </div>
 
-  <div class="hero-container" style="margin-top: 14vh;">
-    <!-- The official GAVIX 3D emblem and typography are seamlessly rendered in native HD background without borders -->
+  <main class="hero-container">
+    <div class="brand-lockup">
+      <img class="brand-logo-img" src="gavix_brand_flawless_transparent.png" alt="GAVIX - Gateway for Advanced Virtual Internet Experience">
+    </div>
 
     <!-- Central Search Bar -->
     <div class="search-wrapper">
@@ -432,7 +432,7 @@
     <div class="shortcuts-row" id="shortcutsRow">
       <!-- Injected via JavaScript data-driven ShortcutTile component -->
     </div>
-  </div>
+  </main>
 
   <!-- Bottom Floating Status Cards (Screenshot 1) -->
   <div class="bottom-cards-row">
